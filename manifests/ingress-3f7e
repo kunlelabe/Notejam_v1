@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: "development-3f7e"
+    labels:
+        app: "development-3f7e"
+    annotations:
+        kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+    rules:
+        - host: development3f7e-development-3f7e.9ff1a86d6af744f49a50.eastus.aksapp.io
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: "development-3f7e"
+                servicePort: 8000
