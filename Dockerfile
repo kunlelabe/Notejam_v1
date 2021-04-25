@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
 COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org
 
 WORKDIR /app
 COPY . /app
@@ -23,4 +23,4 @@ COPY . /app
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 # File wsgi.py was not found in subfolder: 'Notejam'. Please enter the Python path to wsgi file.
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "pythonPath.to.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "runserver:app", "db.py"]
