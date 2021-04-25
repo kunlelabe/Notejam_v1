@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: "development-ca9b"
+    labels:
+        app: "development-ca9b"
+    annotations:
+        kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+    rules:
+        - host: developmentb4ae-development-ca9b.9ff1a86d6af744f49a50.eastus.aksapp.io
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: "development-ca9b"
+                servicePort: 8000
