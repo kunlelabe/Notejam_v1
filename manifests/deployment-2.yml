@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "development-1f99"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "development-1f99"
+  template:
+    metadata:
+      labels:
+        app: "development-1f99"
+    spec:
+      containers:
+        - name: "development-1f99"
+          image: "mydevtest.azurecr.io/development"
+          ports:
+          - containerPort: 8000
