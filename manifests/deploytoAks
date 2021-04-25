@@ -1,0 +1,51 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: mydevtest.azurecr.io
+        username: ${{ secrets.acr_mydevtest_username }}
+        password: ${{ secrets.acr_mydevtest_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/." -f  "Dockerfile" -t mydevtest.azurecr.io/development3f7e:${{ github.sha }}
+        docker push mydevtest.azurecr.io/development3f7e:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_development_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep development3f7e | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace development3f7e`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: development3f7e
+        container-registry-url: mydevtest.azurecr.io
+        container-registry-username: ${{ secrets.acr_mydevtest_username }}
+        container-registry-password: ${{ secrets.acr_mydevtest_password }}
+        secret-name: developmentdockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: development3f7e
+        manifests: |
+          ./manifests/deployment-3f7e.yml
+          ./manifests/service-3f7e.yml
+          ./manifests/ingress-3f7e.yml
+        images: |
+          mydevtest.azurecr.io/development3f7e:${{ github.sha }}
+        imagepullsecrets: |
+          developmentdockerauth
