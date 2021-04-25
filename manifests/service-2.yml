@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: "development-1f99"
+    labels:
+        app: "development-1f99"
+spec:
+    type: ClusterIP
+    ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+    selector:
+        app: "development-1f99"
