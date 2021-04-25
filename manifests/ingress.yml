@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: "development-afad"
+    labels:
+        app: "development-afad"
+    annotations:
+        kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+    rules:
+        - host: default-development-afad.9ff1a86d6af744f49a50.eastus.aksapp.io
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: "development-afad"
+                servicePort: 8000
